@@ -19,8 +19,6 @@ async function runTest() {
     console.log(`[1] Inserting test user with email: ${testEmail}...`);
     const insertResult = await db.insert(users).values({
       email: testEmail,
-      monthlyTokenUsage: 0,
-      tokenLimit: 5000000,
     }).returning();
 
     if (insertResult.length === 0) {

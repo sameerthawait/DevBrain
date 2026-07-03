@@ -9,6 +9,11 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "npx tsx tests/test-db.ts",
+    "test:db-integration": "npx tsx tests/test-db-integration.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
     "prepare": "husky"
   },
   "dependencies": {
