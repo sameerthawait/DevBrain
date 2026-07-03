@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Add other standard next.js configuration settings here if needed
 };
 
-export default nextConfig;
+// Wrap the configuration with Sentry build settings
+export default withSentryConfig(nextConfig, {
+  org: "devbrain-io",
+  project: "devbrain",
+  silent: true, // Suppresses source map uploading logs during builds
+  widenClientFileUpload: true,
+  disableLogger: true,
+});
