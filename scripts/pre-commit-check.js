@@ -30,8 +30,6 @@ function shouldSkipFile(filename) {
   // Never flag documentation, markdown, ADRs, test folders, or CI configs
   if (norm.endsWith(".md")) return true;
   if (norm.includes("docs/")) return true;
-  if (norm.includes("tests/")) return true;
-  if (norm.includes(".github/")) return true;
   return false;
 }
 
