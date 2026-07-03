@@ -2,8 +2,12 @@ import { z } from "zod";
 
 const envSchema = z.object({
   // Database Configuration
-  DATABASE_URL: z.string().startsWith("DATABASE_URL must be a valid connection string"),
-  DATABASE_URL_UNPOOLED: z.string().startsWith("DATABASE_URL_UNPOOLED must be a valid connection string"),
+  DATABASE_URL: z.string().regex(/^postgres(ql)?:\/\//, {
+    message: "DATABASE_URL must be a valid PostgreSQL connection string",
+  }),
+  DATABASE_URL_UNPOOLED: z.string().regex(/^postgres(ql)?:\/\//, {
+    message: "DATABASE_URL_UNPOOLED must be a valid PostgreSQL connection string",
+  }),
 
   // Upstash Redis Configuration
   UPSTASH_REDIS_REST_URL: z.string().url("UPSTASH_REDIS_REST_URL must be a valid HTTP URL"),
@@ -28,9 +32,13 @@ const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
   const errors = parsedEnv.error.format();
-  // Using console.error strictly here before structured JSON logger is fully loaded
-  console.error("❌ Invalid environment configuration:", JSON.stringify(errors, null, 2));
-  throw new Error("Application initialization failed: Invalid environment configuration.");
+  console.error(
+    "❌ Invalid environment configuration:",
+    JSON.stringify(errors, null, 2)
+  );
+  throw new Error(
+    "Application initialization failed: Invalid environment configuration."
+  );
 }
 
 export const env = parsedEnv.data;
