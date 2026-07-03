@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: true
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
@@ -55,7 +54,7 @@ jobs:
         run: npm run lint
 
       - name: Type Check
-        run: npm run typecheck
+        run: npx tsc --noEmit
 
       - name: Run Tests
         env:
@@ -65,7 +64,9 @@ jobs:
           UPSTASH_REDIS_REST_URL: "https://localhost:6379"
           UPSTASH_REDIS_REST_TOKEN: "dummy_token"
 
-          NVIDIA_API_KEY: "dummy_nvidia_key"
+          NVIDIA_API_KEY: "dummy_chat_key"
+          NVIDIA_EMBEDDING_API_KEY: "dummy_embedding_key"
+          NVIDIA_RERANKING_API_KEY: "dummy_rerank_key"
           NVIDIA_BASE_URL: "https://integrate.api.nvidia.com/v1"
 
           NEXTAUTH_SECRET: "dummy_nextauth_secret"
