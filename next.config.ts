@@ -11,5 +11,4 @@ export default withSentryConfig(nextConfig, {
   project: "devbrain",
   silent: true, // Suppresses source map uploading logs during builds
   widenClientFileUpload: true,
-  disableLogger: true,
 });

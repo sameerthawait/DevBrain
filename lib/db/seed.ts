@@ -49,7 +49,7 @@ export async function seed() {
     tokenLimit: 10000000,
   }).returning();
 
-  const [user2] = await db.insert(schema.users).values({
+  await db.insert(schema.users).values({
     email: "reviewer@devbrain.ai",
     monthlyTokenUsage: 0,
     tokenLimit: 10000000,
@@ -92,7 +92,7 @@ export async function seed() {
 
   // 7. Insert Messages
   logger.info("Inserting deterministic messages...");
-  const [msg1] = await db.insert(schema.messages).values({
+  await db.insert(schema.messages).values({
     conversationId: conv1.id,
     sender: "user",
     content: "Which database index types should we use for approximate nearest neighbor searches?",
@@ -119,7 +119,7 @@ export async function seed() {
 
   // 9. Insert NLI Results
   logger.info("Inserting deterministic NLI results...");
-  const [nli1] = await db.insert(schema.nliResults).values({
+  await db.insert(schema.nliResults).values({
     messageId: msg2.id,
     claimA: "We use HNSW index for vector optimization.",
     claimB: "We use IVFFlat index for vector optimization.",

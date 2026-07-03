@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
+
   // 1. Generate unique request & correlation IDs
   const requestId = crypto.randomUUID();
   const correlationId = request.headers.get("x-correlation-id") || crypto.randomUUID();
@@ -36,16 +37,16 @@ export function middleware(request: NextRequest) {
   response.headers.set(cspHeaderKey, cspRules);
   response.headers.set("X-Request-Id", requestId);
   response.headers.set("X-Correlation-Id", correlationId);
-  
+
   // HSTS (Strict-Transport-Security): Enforces HTTPS connection browser-wide (max-age: 2 years)
   response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
-  
+
   // X-Frame-Options: Prevents clickjacking by blocking rendering within iframe elements
   response.headers.set("X-Frame-Options", "DENY");
-  
+
   // Referrer-Policy: Prevents leaking referrer values on cross-origin requests
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  
+
   // X-Content-Type-Options: Enforces MIME-type matching (stops browsers sniffing non-style sheets)
   response.headers.set("X-Content-Type-Options", "nosniff");
 
