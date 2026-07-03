@@ -2,8 +2,8 @@ import { z } from "zod";
 
 const envSchema = z.object({
   // Database Configuration
-  DATABASE_URL: z.string().url("DATABASE_URL must be a valid connection string"),
-  DATABASE_URL_UNPOOLED: z.string().url("DATABASE_URL_UNPOOLED must be a valid connection string"),
+  DATABASE_URL: z.string().startsWith("DATABASE_URL must be a valid connection string"),
+  DATABASE_URL_UNPOOLED: z.string().startsWith("DATABASE_URL_UNPOOLED must be a valid connection string"),
 
   // Upstash Redis Configuration
   UPSTASH_REDIS_REST_URL: z.string().url("UPSTASH_REDIS_REST_URL must be a valid HTTP URL"),
@@ -15,8 +15,7 @@ const envSchema = z.object({
   NVIDIA_EMBEDDING_API_KEY: z.string().min(1, "NVIDIA_EMBEDDING_API_KEY must not be empty"),
   NVIDIA_RERANKING_API_KEY: z.string().min(1, "NVIDIA_RERANKING_API_KEY must not be empty"),
 
-  // Better Auth / NextAuth Configuration
-  BETTER_AUTH_SECRET: z.string().min(1, "BETTER_AUTH_SECRET must not be empty"),
+  // NextAuth Configuration
   NEXTAUTH_SECRET: z.string().min(1, "NEXTAUTH_SECRET must not be empty"),
   NEXTAUTH_URL: z.string().url("NEXTAUTH_URL must be a valid URL"),
 
