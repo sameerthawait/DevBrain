@@ -1,65 +1,109 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { Sidebar } from "@/components/sidebar";
+import { ChatInterface } from "@/components/chat-interface";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Settings } from "@/components/settings";
+import { CommandPalette } from "@/components/command-palette";
+import { NotificationToast, ToastMessage } from "@/components/notification-toast";
 
 export default function Home() {
+  const [activeProject, setActiveProject] = useState("Core Library");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Listen for Ctrl+K / Cmd+K global shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const addToast = (message: string, type: ToastMessage["type"] = "info") => {
+    const newToast: ToastMessage = {
+      id: crypto.randomUUID(),
+      type,
+      message,
+    };
+    setToasts((prev) => [...prev, newToast]);
+  };
+
+  const handleDismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const handleSelectProject = (project: string) => {
+    setActiveProject(project);
+    addToast(`Switched active workspace to ${project}`, "success");
+  };
+
+  const handleNewConversation = () => {
+    addToast("New conversation thread initialized.", "info");
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <ThemeProvider>
+      <div className="flex h-screen w-screen overflow-hidden bg-[var(--background)] text-[var(--foreground)]">
+        {/* 1. Left Navigation Sidebar */}
+        <ErrorBoundary>
+          <Sidebar
+            activeProject={activeProject}
+            onProjectSelect={handleSelectProject}
+            onNewConversation={handleNewConversation}
+          />
+        </ErrorBoundary>
+
+        {/* 2. Main Chat Workspace */}
+        <ErrorBoundary>
+          <main className="flex-1 flex flex-col min-w-0" role="main">
+            <header className="px-6 py-4 border-b border-[var(--card-border)] bg-[var(--card-bg)] flex items-center justify-between">
+              <h2 className="text-sm font-bold tracking-wide uppercase opacity-75">
+                Active Workspace: <span className="text-[var(--accent)]">{activeProject}</span>
+              </h2>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setIsCommandOpen(true)}
+                  className="text-xs opacity-60 font-mono hover:opacity-100 transition-opacity px-1.5 py-0.5 border border-[var(--card-border)] bg-[var(--background)] rounded"
+                >
+                  Press <kbd>Ctrl+K</kbd> to search
+                </button>
+                <button
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="px-3 py-1.5 border border-[var(--card-border)] bg-[var(--card-bg)] rounded-[var(--radius-sm)] text-xs font-semibold hover:bg-[var(--gray-50)] transition-colors"
+                >
+                  ⚙ Settings
+                </button>
+              </div>
+            </header>
+
+            <ChatInterface />
+          </main>
+        </ErrorBoundary>
+
+        {/* 3. Global Control Modals */}
+        <ErrorBoundary>
+          <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <CommandPalette
+            isOpen={isCommandOpen}
+            onClose={() => setIsCommandOpen(false)}
+            onSelectProject={handleSelectProject}
+          />
+        </ErrorBoundary>
+
+        {/* 4. Non blocking notifications layers */}
+        <NotificationToast toasts={toasts} onDismiss={handleDismissToast} />
+      </div>
+    </ThemeProvider>
   );
 }

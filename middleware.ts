@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function proxy(request: NextRequest) {
-
+export function middleware(request: NextRequest) {
   // 1. Generate unique request & correlation IDs
   const requestId = crypto.randomUUID();
   const correlationId = request.headers.get("x-correlation-id") || crypto.randomUUID();
@@ -21,7 +20,7 @@ export function proxy(request: NextRequest) {
     "style-src 'self' 'unsafe-inline';",
     "img-src 'self' blob: data:;",
     "font-src 'self' data:;",
-    "connect-src 'self' https://integrate.api.nvidia.com https://*.sentry.io https://free-mutt-141625.upstash.io;",
+    "connect-src 'self' https://integrate.api.nvidia.com https://*.sentry.io https://free-mutt-141625.upstash.io https://api.nim.nvidia.com;",
     "frame-ancestors 'none';",
     "upgrade-insecure-requests;"
   ].join(" ");
@@ -56,12 +55,6 @@ export function proxy(request: NextRequest) {
 // Apply middleware configuration globally except for asset/favicon directories
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

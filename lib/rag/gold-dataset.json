@@ -1,0 +1,52 @@
+[
+  {
+    "query": "How to configure pgvector HNSW indexing options?",
+    "expectedChunkIds": ["chunk-hnsw-001"],
+    "expectedProject": "DevBrain Core",
+    "expectedConversation": "DB Optimization Thread",
+    "expectedCitation": "adr-0008",
+    "expectedIntent": "Database Index Tuning",
+    "difficultyLevel": "hard",
+    "category": "database"
+  },
+  {
+    "query": "Which background job queue strategy is selected for Vercel execution limits?",
+    "expectedChunkIds": ["chunk-jobs-002"],
+    "expectedProject": "DevBrain Core",
+    "expectedConversation": "Architecture Review Board",
+    "expectedCitation": "adr-0011",
+    "expectedIntent": "Background Processing Strategy",
+    "difficultyLevel": "medium",
+    "category": "architecture"
+  },
+  {
+    "query": "Why should we enforce strict multitenancy constraints on user sessions?",
+    "expectedChunkIds": ["chunk-auth-003"],
+    "expectedProject": "DevBrain Security",
+    "expectedConversation": "Auth Audits",
+    "expectedCitation": "adr-0004",
+    "expectedIntent": "Multi-Tenant Access Isolation",
+    "difficultyLevel": "hard",
+    "category": "security"
+  },
+  {
+    "query": "How are transaction rollbacks managed on chunk insertion failures?",
+    "expectedChunkIds": ["chunk-store-004"],
+    "expectedProject": "DevBrain Core",
+    "expectedConversation": "DB Schema Review",
+    "expectedCitation": "adr-0009",
+    "expectedIntent": "Transactional Storage Guarantees",
+    "difficultyLevel": "medium",
+    "category": "database"
+  },
+  {
+    "query": "What are the token limits for NVIDIA NIM embeddings models?",
+    "expectedChunkIds": ["chunk-cost-005"],
+    "expectedProject": "DevBrain Core",
+    "expectedConversation": "Cost Accounting Audits",
+    "expectedCitation": "adr-0010",
+    "expectedIntent": "Cost and Quota Management",
+    "difficultyLevel": "easy",
+    "category": "finance"
+  }
+]

@@ -12,6 +12,7 @@ const envSchema = z.object({
   // Upstash Redis Configuration
   UPSTASH_REDIS_REST_URL: z.string().url("UPSTASH_REDIS_REST_URL must be a valid HTTP URL"),
   UPSTASH_REDIS_REST_TOKEN: z.string().min(1, "UPSTASH_REDIS_REST_TOKEN must not be empty"),
+  REDIS_URL: z.string().url("REDIS_URL must be a valid Redis URL"),
 
   // NVIDIA NIM API Configuration
   NVIDIA_API_KEY: z.string().min(1, "NVIDIA_API_KEY must not be empty"),
@@ -40,6 +41,10 @@ if (!parsedEnv.success) {
     "Application initialization failed: Invalid environment configuration."
   );
 }
+
+// Extra placeholder assertions check
+import { validateEnvironment } from "./env-validator";
+validateEnvironment();
 
 export const env = parsedEnv.data;
 export type EnvType = z.infer<typeof envSchema>;

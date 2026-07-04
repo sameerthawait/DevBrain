@@ -6,12 +6,12 @@ import { requestStorage } from "./logger";
  * Extracts propagation headers from the request context and binds them
  * to the AsyncLocalStorage logging store.
  */
-export function withLogging(handler: () => Promise<Response>) {
-  return async () => {
+export function withLogging<T extends unknown[]>(handler: (...args: T) => Promise<Response>) {
+  return async (...args: T) => {
     const reqHeaders = await headers();
     const requestId = reqHeaders.get("x-request-id") || crypto.randomUUID();
     const correlationId = reqHeaders.get("x-correlation-id") || requestId;
 
-    return requestStorage.run({ requestId, correlationId }, handler);
+    return requestStorage.run({ requestId, correlationId }, () => handler(...args));
   };
 }
