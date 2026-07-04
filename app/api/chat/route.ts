@@ -85,7 +85,7 @@ async function chatHandler(request: NextRequest): Promise<Response> {
     const finalState = await secondBrainAgent.invoke({
       userId: authenticatedUserId,
       query,
-      intent: "Unknown" as any,
+      intent: "Unknown" as import("@/lib/agents/intent-classifier").Intent,
       isSafe: true,
       retrievedChunks: [],
       context: "",

@@ -98,7 +98,7 @@ async function runSearchApiTests() {
       throw new Error("Retrieval returned empty results for valid authorized search!");
     }
     
-    body.results.forEach((chunk: any) => {
+    body.results.forEach((chunk: import("../lib/rag/retrieve").RetrievedChunk) => {
       console.log(`- Retrieved Chunk Content: "${chunk.content}"`);
       if (chunk.documentId === undefined || chunk.filePath === undefined) {
         throw new Error("Retrieved results did not contain correct document context");

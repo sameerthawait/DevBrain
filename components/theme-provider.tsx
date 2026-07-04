@@ -17,7 +17,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const saved = localStorage.getItem("devbrain-theme") as Theme;
     if (saved) {
-      setThemeState(saved);
+      setTimeout(() => {
+        setThemeState(saved);
+      }, 0);
     }
   }, []);
 

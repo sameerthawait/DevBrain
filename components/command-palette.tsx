@@ -25,12 +25,19 @@ export function CommandPalette({ isOpen, onClose, onSelectProject }: CommandPale
     item.label.toLowerCase().includes(query.toLowerCase())
   );
 
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) {
+      setSelectedIndex(0);
+      setQuery("");
+    }
+  }
+
   // Focus input on mount
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
-      setSelectedIndex(0);
-      setQuery("");
     }
   }, [isOpen]);
 

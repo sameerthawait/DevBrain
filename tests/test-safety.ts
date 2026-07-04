@@ -87,7 +87,7 @@ async function runSafetyTests() {
     const agentResult = await secondBrainAgent.invoke({
       userId: testUser.id,
       query: "Explain safety rules",
-      intent: "Unknown" as any,
+      intent: "Unknown" as import("../lib/agents/intent-classifier").Intent,
       isSafe: true,
       retrievedChunks: [],
       context: "",

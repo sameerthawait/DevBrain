@@ -50,7 +50,7 @@ async function runAgentWorkflowTests() {
     const stateInput = {
       userId: testUser.id,
       query: "Explain why we choose the HNSW index option?",
-      intent: "Unknown" as any,
+      intent: "Unknown" as import("../lib/agents/intent-classifier").Intent,
       isSafe: true,
       retrievedChunks: [],
       context: "",

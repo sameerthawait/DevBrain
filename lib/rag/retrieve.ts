@@ -1,6 +1,6 @@
 import { db } from "../db";
 import * as schema from "../db/schema";
-import { sql, and, eq, gte, lte, inArray, desc } from "drizzle-orm";
+import { sql, and, eq, gte, lte, desc } from "drizzle-orm";
 import { embedChunks } from "./embed";
 import { logger } from "../logger";
 import Redis from "ioredis";

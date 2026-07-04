@@ -15,7 +15,7 @@ export const options = {
   },
 };
 
-export default function () {
+export default function k6LoadTest() {
   // Define endpoint calls
   const baseUrl = "http://localhost:3000";
   const sessionToken = "chat_test_auth_token_789";

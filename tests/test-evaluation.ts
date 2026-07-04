@@ -96,7 +96,7 @@ async function runEvaluationTests() {
       { id: "chunk-a", similarity: 0.8 },
       { id: "chunk-b", similarity: 0.7 },
       { id: "chunk-c", similarity: 0.6 },
-    ] as any[];
+    ] as import("../lib/rag/retrieve").RetrievedChunk[];
     
     const calc = calculateRetrievalMetrics(mockReturned, ["chunk-b"]);
     if (calc.precisionAt1 !== 0 || calc.precisionAt3 !== 1/3 || calc.mrr !== 0.5) {
