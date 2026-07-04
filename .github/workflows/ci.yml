@@ -63,6 +63,7 @@ jobs:
 
           UPSTASH_REDIS_REST_URL: "https://localhost:6379"
           UPSTASH_REDIS_REST_TOKEN: "dummy_token"
+          REDIS_URL: "redis://localhost:6379"
 
           NVIDIA_API_KEY: "dummy_chat_key"
           NVIDIA_EMBEDDING_API_KEY: "dummy_embedding_key"
