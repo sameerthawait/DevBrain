@@ -58,21 +58,21 @@ jobs:
 
       - name: Run Tests
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
-          DATABASE_URL_UNPOOLED: "postgresql://postgres:postgres@localhost:5432/postgres"
+          DATABASE_URL: "postgresql://postgres.ebodlufpffzeduhojfsk:Sameer%40221103%40@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres"
+          DATABASE_URL_UNPOOLED: "postgresql://postgres.ebodlufpffzeduhojfsk:Sameer%40221103%40@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres"
 
-          UPSTASH_REDIS_REST_URL: "https://localhost:6379"
-          UPSTASH_REDIS_REST_TOKEN: "dummy_token"
-          REDIS_URL: "redis://localhost:6379"
+          UPSTASH_REDIS_REST_URL: "https://free-mutt-141625.upstash.io"
+          UPSTASH_REDIS_REST_TOKEN: "ggAAAAAAAik5AAIgcDIAddbPPnzscaBeBlGSvXkuv20Ai3VPkRLzaPuwKSMTRQ"
+          REDIS_URL: "rediss://default:gQAAAAAAAik5AAIgcDIwNGIyMTVmOGIyODU0MmViYWViNzhmN2U2OGRiYTJjNw@free-mutt-141625.upstash.io:6379"
 
-          NVIDIA_API_KEY: "dummy_chat_key"
-          NVIDIA_EMBEDDING_API_KEY: "dummy_embedding_key"
-          NVIDIA_RERANKING_API_KEY: "dummy_rerank_key"
+          NVIDIA_API_KEY: "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"
+          NVIDIA_EMBEDDING_API_KEY: "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"
+          NVIDIA_RERANKING_API_KEY: "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"
           NVIDIA_BASE_URL: "https://integrate.api.nvidia.com/v1"
 
-          NEXTAUTH_SECRET: "dummy_nextauth_secret"
+          NEXTAUTH_SECRET: "6ccc30ca8f43ce89f2cb53a11c9d4c5d36d21bdbe79cf8bb12bc1db9c305b6f0"
           NEXTAUTH_URL: "http://localhost:3000"
 
-          SENTRY_DSN: "https://dummy@o0.ingest.sentry.io/0"
+          SENTRY_DSN: "https://85a7464ed711ccec44d8dcd2b88fc325@o4511669258813440.ingest.us.sentry.io/4511669262680064"
 
         run: npm test
