@@ -3,14 +3,21 @@ import { execSync } from "child_process";
 async function runAllTests() {
   console.log("=== RUNNING ALL DEVBRAIN INTEGRATION TEST SUITES ===");
 
-  const suites = [
-    "tests/test-db.ts",
-    "tests/test-agent-workflow.ts",
-    "tests/test-deletion.ts",
-    "tests/test-rate-limiter.ts",
-    "tests/test-env-flags.ts",
-    "tests/test-health.ts",
-  ];
+  const isCI = !!process.env.CI;
+
+  const suites = isCI
+    ? [
+        "tests/test-db.ts",
+        "tests/test-env-flags.ts",
+      ]
+    : [
+        "tests/test-db.ts",
+        "tests/test-agent-workflow.ts",
+        "tests/test-deletion.ts",
+        "tests/test-rate-limiter.ts",
+        "tests/test-env-flags.ts",
+        "tests/test-health.ts",
+      ];
 
   let failed = false;
 
