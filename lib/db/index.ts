@@ -1,40 +1,25 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema';
-import { env } from '../config/env';
-import { logger } from '../logger';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "./schema";
 
-// Singleton database connection management for serverless context
+// Single shared pg Pool — used by both Drizzle (app queries)
+// and Better Auth (users/sessions). One connection pool, one
+// source of truth.
 declare global {
-  var globalPgClient: postgres.Sql | undefined;
+  // eslint-disable-next-line no-var
+  var globalPgPool: Pool | undefined;
 }
 
-/**
- * Configure database connections.
- * - Max connections per container: 10 (controls connection pool limits)
- * - connect_timeout: 10 seconds (abort connection attempts that hang)
- * - statement_timeout: 10000ms (abort single queries taking > 10s to prevent locks)
- * - idle_in_transaction_session_timeout: 5000ms (kills transactions hanging idle > 5s)
- * - prepare: false (disable prepared statements for transaction-mode connection poolers)
- */
-// Connection is lazy: postgres() does not connect until the first query,
-// so the app can boot before DATABASE_URL is configured.
-export const client = globalThis.globalPgClient ?? postgres(env.DATABASE_URL ?? "postgres://user:pass@localhost:5432/devbrain", {
-  prepare: false,
-  max: 10,
-  connect_timeout: 10,
-  connection: {
-    statement_timeout: 5000,
-    idle_in_transaction_session_timeout: 30000,
-  },
-  debug: (connection, query, parameters) => {
-    // Log queries during execution
-    logger.trace({ query, parameters }, "Database query dispatched");
-  }
-});
+export const pool =
+  globalThis.globalPgPool ??
+  new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 10,
+    connectionTimeoutMillis: 10000,
+  });
 
 if (process.env.NODE_ENV !== "production") {
-  globalThis.globalPgClient = client;
+  globalThis.globalPgPool = pool;
 }
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(pool, { schema });
