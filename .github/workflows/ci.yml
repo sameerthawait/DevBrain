@@ -1,0 +1,78 @@
+name: DevBrain CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  secret-scan:
+    name: Secret Scanning (Gitleaks)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-and-verify:
+    name: Build & Verify
+    needs: secret-scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      - name: Run Tests
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+          DATABASE_URL_UNPOOLED: "postgresql://postgres:postgres@localhost:5432/postgres"
+
+          UPSTASH_REDIS_REST_URL: "https://localhost:6379"
+          UPSTASH_REDIS_REST_TOKEN: "dummy_token"
+          REDIS_URL: "redis://localhost:6379"
+
+          NVIDIA_API_KEY: "dummy_chat_key"
+          NVIDIA_EMBEDDING_API_KEY: "dummy_embedding_key"
+          NVIDIA_RERANKING_API_KEY: "dummy_rerank_key"
+          NVIDIA_BASE_URL: "https://integrate.api.nvidia.com/v1"
+
+          NEXTAUTH_SECRET: "dummy_nextauth_secret"
+          NEXTAUTH_URL: "http://localhost:3000"
+
+          SENTRY_DSN: "https://dummy@o0.ingest.sentry.io/0"
+
+        run: npm test

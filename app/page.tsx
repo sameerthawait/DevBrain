@@ -1,23 +1,109 @@
-export default function Page() {
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { Sidebar } from "@/components/sidebar";
+import { ChatInterface } from "@/components/chat-interface";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Settings } from "@/components/settings";
+import { CommandPalette } from "@/components/command-palette";
+import { NotificationToast, ToastMessage } from "@/components/notification-toast";
+
+export default function Home() {
+  const [activeProject, setActiveProject] = useState("Core Library");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Listen for Ctrl+K / Cmd+K global shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const addToast = (message: string, type: ToastMessage["type"] = "info") => {
+    const newToast: ToastMessage = {
+      id: crypto.randomUUID(),
+      type,
+      message,
+    };
+    setToasts((prev) => [...prev, newToast]);
+  };
+
+  const handleDismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const handleSelectProject = (project: string) => {
+    setActiveProject(project);
+    addToast(`Switched active workspace to ${project}`, "success");
+  };
+
+  const handleNewConversation = () => {
+    addToast("New conversation thread initialized.", "info");
+  };
+
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[color:light-dark(#fff,#000)] text-[color:light-dark(#000,#fff)]">
-      <svg
-        aria-hidden="true"
-        className="size-20"
-        fill="none"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke="currentColor"
-        strokeWidth="0.5"
-      >
-        <path
-          d="M14.2 14.2H17V6.9375C17 4.76288 15.2371 3 13.0625 3H5.8V5.8M14.2 14.2V7.79063L7.79062 14.2H14.2ZM14.2 14.2V17H6.9375C4.76288 17 3 15.2371 3 13.0625V5.8H5.8M5.8 5.8V12.2313L12.2313 5.8H5.8Z"
-          strokeLinejoin="round"
-        />
-      </svg>
-      <p className="absolute left-1/2 top-[calc(50%+56px)] -translate-x-1/2 whitespace-nowrap text-sm font-medium text-muted-foreground">
-        Your v0 generation will show here.
-      </p>
-    </main>
-  )
+    <ThemeProvider>
+      <div className="flex h-screen w-screen overflow-hidden bg-[var(--background)] text-[var(--foreground)]">
+        {/* 1. Left Navigation Sidebar */}
+        <ErrorBoundary>
+          <Sidebar
+            activeProject={activeProject}
+            onProjectSelect={handleSelectProject}
+            onNewConversation={handleNewConversation}
+          />
+        </ErrorBoundary>
+
+        {/* 2. Main Chat Workspace */}
+        <ErrorBoundary>
+          <main className="flex-1 flex flex-col min-w-0" role="main">
+            <header className="px-6 py-4 border-b border-[var(--card-border)] bg-[var(--card-bg)] flex items-center justify-between">
+              <h2 className="text-sm font-bold tracking-wide uppercase opacity-75">
+                Active Workspace: <span className="text-[var(--accent)]">{activeProject}</span>
+              </h2>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setIsCommandOpen(true)}
+                  className="text-xs opacity-60 font-mono hover:opacity-100 transition-opacity px-1.5 py-0.5 border border-[var(--card-border)] bg-[var(--background)] rounded"
+                >
+                  Press <kbd>Ctrl+K</kbd> to search
+                </button>
+                <button
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="px-3 py-1.5 border border-[var(--card-border)] bg-[var(--card-bg)] rounded-[var(--radius-sm)] text-xs font-semibold hover:bg-[var(--gray-50)] transition-colors"
+                >
+                  ⚙ Settings
+                </button>
+              </div>
+            </header>
+
+            <ChatInterface />
+          </main>
+        </ErrorBoundary>
+
+        {/* 3. Global Control Modals */}
+        <ErrorBoundary>
+          <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <CommandPalette
+            isOpen={isCommandOpen}
+            onClose={() => setIsCommandOpen(false)}
+            onSelectProject={handleSelectProject}
+          />
+        </ErrorBoundary>
+
+        {/* 4. Non blocking notifications layers */}
+        <NotificationToast toasts={toasts} onDismiss={handleDismissToast} />
+      </div>
+    </ThemeProvider>
+  );
 }
